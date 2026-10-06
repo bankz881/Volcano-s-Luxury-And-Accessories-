@@ -7,7 +7,6 @@ menuBtn.addEventListener("click", () => {
   menuBtn.setAttribute("aria-expanded", open);
 });
 
-// Close the menu after tapping a link
 nav.querySelectorAll("a").forEach(link => {
   link.addEventListener("click", () => {
     nav.classList.remove("open");
@@ -18,12 +17,14 @@ nav.querySelectorAll("a").forEach(link => {
 // Footer year
 document.getElementById("year").textContent = new Date().getFullYear();
 
-// Demo quote form (does not send data anywhere)
+// Quote form: sends to Web3Forms
 const form = document.getElementById("quoteForm");
 const msg = document.getElementById("formMsg");
+const submitBtn = form.querySelector("button[type='submit']");
 
-form.addEventListener("submit", (e) => {
+form.addEventListener("submit", async (e) => {
   e.preventDefault();
+
   const missing = ["name", "phone", "email", "service"].filter(
     id => !document.getElementById(id).value.trim()
   );
@@ -33,7 +34,28 @@ form.addEventListener("submit", (e) => {
     document.getElementById(missing[0]).focus();
     return;
   }
-  msg.className = "form-msg ok";
-  msg.textContent = "Thanks! This is a demo form, so your request was not sent.";
-  form.reset();
+
+  submitBtn.disabled = true;
+  msg.className = "form-msg";
+  msg.textContent = "Sending...";
+
+  try {
+    const response = await fetch(form.action, {
+      method: "POST",
+      body: new FormData(form)
+    });
+    const result = await response.json();
+    if (response.ok && result.success) {
+      msg.className = "form-msg ok";
+      msg.textContent = "Thank you! Your request was sent. We'll be in touch soon.";
+      form.reset();
+    } else {
+      throw new Error(result.message || "Send failed");
+    }
+  } catch (err) {
+    msg.className = "form-msg error";
+    msg.textContent = "Sorry, something went wrong. Please call us instead.";
+  } finally {
+    submitBtn.disabled = false;
+  }
 });

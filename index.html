@@ -115,7 +115,10 @@
   <div class="container narrow">
     <h2>Request a Free Quote</h2>
     <p class="lead">Tell us what you need. (Demo form: nothing is actually sent.)</p>
-    <dc5f5b5b-c311-4c07-8a3d-ee136ff5e5af>
+    <form id="quoteForm" action="https://api.web3forms.com/submit" method="POST" novalidate>
+  <input type="hidden" name="access_key" value=dc5f5b5b-c311-4c07-8a3d-ee136ff5e5af>
+  <input type="hidden" name="subject" value="New quote request from BlueLine Plumbing">
+  <input type="checkbox" name="botcheck" style="display:none" tabindex="-1" autocomplete="off">
       <label for="name">Full name</label>
       <input id="name" name="name" type="text" autocomplete="name" required>
 
